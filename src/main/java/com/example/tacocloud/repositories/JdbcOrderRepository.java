@@ -29,7 +29,7 @@ public class JdbcOrderRepository implements IOrderRepository {
         order.setPlacedAt(new Date());
         long orderId = saveOrderDetails(order);
         order.setId(orderId);
-        List<Taco> tocos = order.getTacos();
+        List<Taco> tacos = order.getTacos();
 
         for(Taco taco : tacos)
             saveTocoToOrder(taco, orderId);

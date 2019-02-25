@@ -26,34 +26,12 @@ public class DesignTacoController {
 
     private final IIngredientRepository ingredientRepository;
 
-    private final ITacoRepository tacoRepository;
+    private ITacoRepository tacoRepository;
 
     @Autowired
     public DesignTacoController(IIngredientRepository ingredientRepository, ITacoRepository tacoRepository){
         this.ingredientRepository = ingredientRepository;
         this.tacoRepository = tacoRepository;
-    }
-
-    @GetMapping
-    public String showDesignForm(Model model){
-        List<Ingredient> ingredients = new ArrayList<>();
-        ingredientRepository.findAll().forEach(i -> ingredients.add(i));
-
-        Type[] types = Ingredient.Type.values();
-        for(Type type : types)
-            model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
-
-
-        model.addAttribute("design", new Taco());
-        return "design";
-    }
-
-    private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type){
-        List<Ingredient> typeIngredients = new ArrayList<>();
-        for(Ingredient ingredient : ingredients)
-            if(ingredient.getType() == type) typeIngredients.add(ingredient);
-
-        return typeIngredients;
     }
 
     @ModelAttribute(name = "order")
@@ -66,10 +44,31 @@ public class DesignTacoController {
         return new Taco();
     }
 
+    @GetMapping
+    public String showDesignForm(Model model){
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredientRepository.findAll().forEach(i -> ingredients.add(i));
+
+        Type[] types = Ingredient.Type.values();
+        for(Type type : types)
+            model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
+
+        return "design";
+    }
+
+    private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type){
+        List<Ingredient> typeIngredients = new ArrayList<>();
+        for(Ingredient ingredient : ingredients)
+            if(ingredient.getType() == type) typeIngredients.add(ingredient);
+
+        return typeIngredients;
+    }
+
     @PostMapping
     public String processDesign(@Valid Taco design, Errors errors, @ModelAttribute Order order){
-        if(errors.hasErrors())
+        if(errors.hasErrors()){
             return "design";
+        }
 
         log.info("Processing design: " + design);
 

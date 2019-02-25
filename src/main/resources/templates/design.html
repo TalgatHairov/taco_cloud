@@ -8,7 +8,11 @@
 </head>
 <body>
     <h1>Design your taco!</h1>
-    <form method="POST" th:object="${design}">
+    <form method="POST" th:object="${taco}">
+        <span class="validationError"
+              th:if="${#fields.hasErrors('ingredients')}"
+              th:errors="*{ingredients}">Ingredient Error</span>
+
         <div class="grid">
             <div class="ingredient-group" id="wraps">
                 <h3>Designate your wrap:</h3>
@@ -48,8 +52,12 @@
         </div>
         <div>
             <h3>Name your taco creation:</h3>
-            <input type="text" th:fields="*{name}"/><br/>
-            <button>Submit your taco</button>
+            <input type="text" th:field="*{name}"/><br/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('name')}"
+                  th:errors="*{name}">Name Error</span>
+            <br/>
+            <button >Submit your taco</button>
         </div>
     </form>
 </body>
